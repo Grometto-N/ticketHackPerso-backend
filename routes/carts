@@ -1,0 +1,63 @@
+var express = require('express');
+var router = express.Router();
+
+const Cart = require('../models/carts');
+const { checkBody } = require('../modules/checkBody');
+
+// route pour sauvegarder les données dans la collection carts
+router.post('/new', (req, res) => {
+    // on vérifie qu'on a bien des données envoyé par le frontend
+    if(checkBody(req.body,['departure','arrival','dep_time','price'])){
+            const newCart = new Cart({
+            departure : req.body.departure,
+            arrival : req.body.arrival,
+            dep_time : req.body.dep_time,
+            price : Number(req.body.price),
+            });
+            // sauvegarde dans la BDD
+            newCart.save().then(newDoc => {res.json({ result : true, travel : newCart });})
+    }else {
+        // il n'y a pas de données
+        res.json({ result : false, error : 'il manque des données'});
+    }
+    
+});
+
+// route qui renvoie toutes les données de la collection carts
+router.get('/', (req, res) => {
+    Cart.find().then(data => {
+        res.json({ result : true, travels : data});
+    });
+});
+
+// route qui supprime toutes les données dans la collection carts
+router.delete('/all', (req, res) => {
+    Cart.deleteMany().then(() => {
+        res.json({ result : true});
+     });
+});
+
+// route qui supprime le voyage cliqué
+router.delete('/one', (req, res) => {
+    // on vérifie qu'on a bien des données envoyé par le frontend
+    if(checkBody(req.body,['departure','arrival','dep_time','price'])){
+              Cart.deleteOne({
+                             departure : req.body.departure ,
+                             arrival : req.body.arrival,
+                             dep_time : req.body.dep_time,
+                             price : Number(req.body.price),
+                             }).then(deletedDoc => {
+                                                   if (deletedDoc.deletedCount > 0) { 
+                                                   // document successfully deleted 
+                                                   res.json({ result : true}); 
+                                                   } else {
+                                                            res.json({ result : false, error : "travel not found"}); 
+                                                           }
+                            }); // fin du deleteOne
+        } else {
+            res.json({ result : false, error : "données incomplètes"});
+        }                                                      
+});
+
+
+module.exports = router;
