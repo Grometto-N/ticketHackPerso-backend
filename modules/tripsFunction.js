@@ -11,6 +11,8 @@ function getTripsDate(trips,date){
                     arrival : tripItem.arrival,
                     dep_time : get_time(tripItem.date),
                     price : tripItem.price, 
+                    trip_id : tripItem.id,
+                    date : tripItem.date,
                 }
             the_trips.push(the_trip);
            }
@@ -30,6 +32,8 @@ function getTripsToday(trips,date){
                 arrival : tripItem.arrival,
                 dep_time : get_time(tripItem.date),
                 price : tripItem.price, 
+                trip_id : tripItem.id,
+                date : tripItem.date,
             }
             the_trips.push(the_trip);
         }
@@ -46,14 +50,28 @@ function displayTrips(trips,date) {
 
       if(verifyDateToday(date)){
         console.log('today')
-        // on est le jour même on renvoie les voyages en fonction qui arrivent
+        // on est le jour même on renvoie les voyages qui arrivent
         return getTripsToday(trips,date);
       } 
-      // si la date est postérieure on revoit les trips du jour
-      console.log()
+      // si la date est postérieure on revoit tous les voyages du jour choisi
       return  getTripsDate(trips,date);
 }
 
+// La fonction displayTrips prends les données de la BDD avec tous les voyages et renvoie ceux dont la date correspond
+function displayCarts(trips) {
+    const the_trips = [];
 
+    for(let tripItem of trips){
+            const the_trip = {
+                departure : tripItem.departure,
+                arrival : tripItem.arrival,
+                dep_time : get_time(tripItem.date),
+                price : tripItem.price, 
+                trip_id : tripItem.id,
+            }
+            the_trips.push(the_trip);
+    }
+    return the_trips;
+}
 
-module.exports = { displayTrips};
+module.exports = { displayTrips, displayCarts};

@@ -4,8 +4,8 @@ const moment = require('moment');
 const momentRandom = require('moment-random');
 const fs = require('fs');
 
-const NB_TRIPS = 2000;
-const CITIES = ['Paris', 'Lyon', 'Marseille', 'Bruxelles'];
+const NB_TRIPS = 5000;
+const CITIES = ['Paris', 'Lyon', 'Marseille', 'Bruxelles', 'Nice', 'Lille', 'Nantes', 'Bordeaux'];
 const MIN_PRICE = 25;
 const MAX_PRICE = 150;
 
@@ -21,7 +21,7 @@ function randomNumber(min, max) {
 const trips = [];
 for (let i = 0; i < NB_TRIPS; i++) {
   const [departure, arrival] = randomElement(CITIES, 2);
-  const date = momentRandom(moment().add(2, 'weeks'), moment());
+  const date = momentRandom(moment().add(5, 'weeks'), moment());
   trips.push({ departure, arrival, date: { $date: date.toDate() }, price: randomNumber(MIN_PRICE, MAX_PRICE) });
 }
 
