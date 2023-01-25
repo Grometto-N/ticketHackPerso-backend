@@ -4,6 +4,7 @@ var router = express.Router();
 const Booking = require('../models/bookings');
 const Trip = require('../models/trips');
 const { checkBody } = require('../modules/checkBody');
+const { get_time, before_departure} = require('../modules/handleDate');
 
 // /purchase est la route qui va se déclencher quand l'utilisateur click sur purchase
 router.post('/purchase', (req, res) => {
@@ -22,7 +23,7 @@ router.post('/purchase', (req, res) => {
                 const newBook = new Booking({
                     departure : itemTrip.departure,
                     arrival : itemTrip.arrival,
-                    dep_time : "en attente",
+                    date: itemTrip.date,
                     price : itemTrip.price,
                 });
                 the_books.push(newBook);
@@ -53,7 +54,21 @@ router.post('/purchase', (req, res) => {
 // route qui renvoie toutes les données de la collection booking
 router.get('/', (req, res) => {
     Booking.find().then(data => {
-        res.json({ result : true, travels : data});
+
+        // on écrit les données sous la forme attendue dans le frontend
+        const data_book = [];
+        for(let itemBook of data){
+            const newBook = {
+                departure : itemBook.departure,
+                arrival : itemBook.arrival,
+                dep_time:  get_time(itemBook.date),
+                price : itemBook.price,
+                before_departure : before_departure(itemBook.date),
+            };
+            console.log(itemBook.date)
+            data_book.push(newBook);
+        }
+        res.json({ result : true, travels : data_book});
     });
 });
 
