@@ -54,21 +54,25 @@ router.post('/purchase', (req, res) => {
 // route qui renvoie toutes les données de la collection booking
 router.get('/', (req, res) => {
     Booking.find().then(data => {
+            // on écrit les données sous la forme attendue dans le frontend
+            const data_book = [];
+            for(let itemBook of data){
+                // on écrit seulement les voyages à venir
+                const dateTrip = itemBook.date;
+                const now = new Date();
+                 if(dateTrip.getTime()-now.getTime() >0){
+                        const newBook = {
+                            departure : itemBook.departure,
+                            arrival : itemBook.arrival,
+                            dep_time:  get_time(itemBook.date),
+                            price : itemBook.price,
+                            before_departure : before_departure(itemBook.date),
+                        };
 
-        // on écrit les données sous la forme attendue dans le frontend
-        const data_book = [];
-        for(let itemBook of data){
-            const newBook = {
-                departure : itemBook.departure,
-                arrival : itemBook.arrival,
-                dep_time:  get_time(itemBook.date),
-                price : itemBook.price,
-                before_departure : before_departure(itemBook.date),
-            };
-            console.log(itemBook.date)
-            data_book.push(newBook);
-        }
-        res.json({ result : true, travels : data_book});
+                        data_book.push(newBook);
+                }   
+            }
+            res.json({ result : true, travels : data_book});
     });
 });
 

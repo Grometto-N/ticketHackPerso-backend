@@ -91,7 +91,7 @@ function before_departure(date){
 
     if(delta <60){
         const display_minutes = (delta >10)? `${delta}` : `0${delta}`;
-        const min_writing = (minutes > 1)? "minutes" : "minute";
+        const min_writing = (delta > 1)? "minutes" : "minute";
         answer_time = `${display_minutes} ${min_writing}`;
     }
 
