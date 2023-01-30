@@ -8,7 +8,6 @@ const { displayTrips, displayCarts } = require('../modules/tripsFunction');
 
 // route qui renvoie les voyages selon les données saisies par l'utilisateur
 router.post('/travels', (req, res) => {
-    console.log("La")
     Trip.find({ departure : {$regex : new RegExp(req.body.departure,'i')}, arrival : {$regex : new RegExp(req.body.arrival,'i')} })
         .then(data => {
 
